@@ -1,27 +1,37 @@
-import { Controller, Get, Param, Query,Post,Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  Post,
+  Body,
+  Put,
+  Patch,
+  Delete
+} from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { EmployeeDto } from './dto/employee.dto';
+import { SourceADto } from './dto/sourceA.dto';
+import { SourceBDto } from './dto/sourceB.dto';
 
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
   // GET /employees?source=a or source=b
-  // Sab employees list karo
-
-  
+  // List all the employees
 
   @Get()
   findAll(@Query('source') source: string): EmployeeDto[] {
     return this.employeesService.findAll(source);
   }
 
-  // GET /employees/1?source=a 
+  // GET /employees/1?source=a
   // Single employee by ID
   @Get(':id')
   findOne(
-    @Param('id') id: string, 
-    @Query('source') source: string
+    @Param('id') id: string,
+    @Query('source') source: string,
   ): EmployeeDto {
     return this.employeesService.findOne(id, source);
   }
@@ -31,13 +41,26 @@ export class EmployeesController {
   // ID from client (in A/B fields)
   @Post()
   create(
-    @Body() employeeData: any,    // Raw A or B data 
-    @Body('format') format: string  // Required "a" or "b"
+    @Body() employeeData: SourceADto | SourceBDto, // Raw A or B data
+    @Query('source') source: string, // Required "a" or "b"
   ): EmployeeDto {
-    return this.employeesService.create(employeeData, format);
+    return this.employeesService.create(employeeData, source);
   }
 
-//http://localhost:3000/employees?source=unified
-//http://localhost:3000/employees?source=a
-//http://localhost:3000/employees/1?source=a
+  @Put(':id')
+  update(
+    @Body() employeeData: SourceADto | SourceBDto ,
+    @Param('id') id: string,
+    @Query('source') source: string,
+  ): EmployeeDto {
+    return this.employeesService.update(employeeData, id, source);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id:string):EmployeeDto
+{
+  return this.employeesService.remove(id); 
+
+}
+
 }

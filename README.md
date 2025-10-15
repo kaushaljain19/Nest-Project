@@ -98,6 +98,10 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 
+******************************************************************************************
+
+
+
 # Employee Integration API
 
 NestJS API that normalizes employee data from multiple sources with different schemas.
@@ -105,3 +109,44 @@ NestJS API that normalizes employee data from multiple sources with different sc
 ## Setup Instructions
 
 1. Install dependencies:
+
+
+// Instruction to check 
+
+ GET  /employees?source=a              # All from Source A
+ GET  /employees?source=b              # All from Source B
+ GET  /employees/1?source=a            # Single from Source A Bases on Id 
+ GET  /employees/1?source=b            # Single from Source B Bases on Id 
+ GET  /employees?source=unified        # New Created employees
+ POST /employees?source=a              # to add new source A type employee in unified array 
+ POST /employees?source=b              # to add new Source B type employee in unified array 
+ DELETE /employees/:id
+ PUT    /employees/:id?source=a|b      (validated via SourceADto/SourceBDto)
+
+
+
+Data to add in post route - 
+
+# Source A format
+curl -X POST "http://localhost:3000/employees?source=a" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id": "434",
+    "fName": "SimpleA",
+    "lName": "Employee",
+    "mail": "simplea@example.com",
+    "dept": "Operations"
+  }'
+
+
+# Source B format 
+
+curl -X POST "http://localhost:3000/employees?source=b" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "emp_id": "500",
+    "FirstName": "TestB",
+    "LastName": "User",
+    "emailAddress": "testb@example.com",
+    "division": "IT"
+  }'
